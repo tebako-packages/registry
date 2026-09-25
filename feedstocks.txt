@@ -8,6 +8,5 @@ hello-runtimes
 fontist
 inkscape
 metanorma
-# tebako-crypto — joins when tebako-packages/tebako-crypto#7 merges (its
-# root registry was a placeholder; that PR makes it the authored one)
+tebako-crypto
 xml2rfc
