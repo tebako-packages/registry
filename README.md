@@ -27,13 +27,14 @@ $ ruby tools/aggregate.rb --check   # parity assertion (CI)
 - A payload name carried by several feedstocks aggregates **once** when
   every carrier's row is identical (DEPENDS-closure mirroring —
   e.g. metanorma mirroring the inkscape toolkit it requires); divergent
-  rows for one name abort the run, naming the carriers. Never a
-  priority pick: the aggregate is internally unambiguous by
-  construction.
+  rows for one name abort the run, naming the carriers. The
+  aggregate never applies a priority ordering, because it is
+  internally unambiguous by construction.
 - `# source:` comments record each row's feedstock (provenance only;
   resolvers ignore comments).
 - The workflow regenerates on a schedule and on demand, commits any
-  drift, and `--check`s every push/PR — a hand-edit goes red.
+  drift, and runs `--check` on every push and pull request, so a
+  hand-edit goes red.
 
 ## Adding a feedstock to the catalog
 
