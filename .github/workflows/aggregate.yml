@@ -1,0 +1,65 @@
+name: aggregate
+
+# The official-registry aggregate flow (spec 37 §6): rebuild
+# tpkg-registry.yaml from the feedstocks' own registries and commit any
+# drift; assert parity on every push/PR so a hand-edit goes red.
+#
+# Pull model: the schedule catches everything, self-healing; feedstocks
+# MAY fire a repository_dispatch after publishing for immediacy (the
+# regeneration is identical either way).
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [feedstock-published]
+  push:
+    branches: [main]
+    paths: [tools/**, feedstocks.txt, .github/workflows/aggregate.yml]
+  pull_request:
+    paths: [tools/**, feedstocks.txt, .github/workflows/aggregate.yml, tpkg-registry.yaml]
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    # Scheduled runs and dispatches regenerate + commit; pushes/PRs to
+    # the tooling only validate parity (below) without committing.
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+      - name: Regenerate the aggregate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ruby tools/aggregate.rb
+      - name: Commit drift
+        run: |
+          if git diff --quiet tpkg-registry.yaml; then
+            echo "aggregate already current"
+          else
+            git config user.name "tebako-ci"
+            git config user.email "tebako@ribose.com"
+            git add tpkg-registry.yaml
+            git commit -m "aggregate: regenerate from the feedstocks ($(date -u +%Y-%m-%d))"
+            git push
+          fi
+
+  parity:
+    runs-on: ubuntu-latest
+    # Every push and PR: the committed file must equal a fresh
+    # regeneration — hand-edits and stale rows both go red.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+      - name: Parity check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ruby tools/aggregate.rb --check

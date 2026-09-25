@@ -1,0 +1,13 @@
+# The feedstocks this aggregate flows (spec 37 §6). One repo name per
+# line; each MUST carry a schema_version: 1 tpkg-registry.yaml at its
+# default-branch root. Add a feedstock here when it joins the official
+# catalog; remove it when it leaves (its rows drop out on the next run —
+# removal flows exactly like withdrawal).
+hello
+hello-runtimes
+fontist
+inkscape
+metanorma
+# tebako-crypto — joins when tebako-packages/tebako-crypto#7 merges (its
+# root registry was a placeholder; that PR makes it the authored one)
+xml2rfc
