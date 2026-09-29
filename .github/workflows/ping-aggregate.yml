@@ -1,0 +1,39 @@
+name: ping-aggregate (reusable)
+
+# Called by a feedstock's publish workflow after its registry entry
+# lands: waits for the entry to reach the feedstock's main, then fires
+# this repo's aggregate (repository_dispatch: feedstock-published) so a
+# same-day publish is visible in the official registry immediately. The
+# 6-hourly schedule is the self-healing backstop — this ping is an
+# immediacy optimization and never fails the caller.
+
+on:
+  workflow_call:
+    secrets:
+      TEBAKO_CI_PAT_TOKEN:
+        required: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for the entry on the feedstock's main, then fire the aggregate
+        env:
+          GH_TOKEN: ${{ secrets.TEBAKO_CI_PAT_TOKEN }}
+          CALLER: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -uo pipefail
+          for i in $(seq 1 60); do
+            if gh api "repos/$CALLER/contents/tpkg-registry.yaml?ref=main" --jq .content 2>/dev/null \
+                 | base64 -d | grep -qF "$TAG"; then
+              echo "the registry entry for $TAG is on $CALLER's main"
+              break
+            fi
+            sleep 10
+          done
+          gh api repos/tebako-packages/registry/dispatches \
+            -f event_type=feedstock-published \
+            -f "client_payload[ref]=$TAG" \
+            -f "client_payload[payload]=${CALLER##*/}" \
+            || echo "::warning::aggregate ping failed — the 6-hourly schedule catches up"
