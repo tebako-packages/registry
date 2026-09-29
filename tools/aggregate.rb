@@ -13,11 +13,13 @@
 #
 # Rows flow VERBATIM (values) — including `status: withdrawn`. A payload
 # name carried by several feedstocks aggregates once when every row is
-# identical (DEPENDS-closure mirroring); DIVERGENT rows for one name
-# abort the run, naming the carriers (never a priority pick — the
-# aggregate is internally unambiguous by construction). Network reads are
-# plain HTTPS GETs of raw.githubusercontent.com (public repos;
-# GITHUB_TOKEN is used when present, raising the rate budget).
+# identical (DEPENDS-closure mirroring); DIVERGENT rows resolve to the
+# OWNING feedstock's row (the repo named after the payload) with a loud
+# warning — a stale mirror never blocks the aggregate — while divergence
+# with no owner among the carriers aborts the run, naming them (never a
+# priority pick among peers). Network reads are plain HTTPS GETs of
+# raw.githubusercontent.com (public repos; GITHUB_TOKEN is used when
+# present, raising the rate budget).
 
 require "net/http"
 require "uri"
@@ -62,13 +64,20 @@ def render(rows)
 end
 
 def build
-  # name => [row, [sources]] — a name carried by several feedstocks is
-  # fine ONLY when every carrier's row is identical (a DEPENDS-closure
-  # mirror, e.g. metanorma mirroring the inkscape toolkit it requires);
-  # the aggregate emits it once with all sources credited. Divergent
-  # rows for one name are a real fork — the run aborts, naming the
-  # carriers (never a priority pick).
-  by_name = {}
+  # name => [[row, source], …] — collect every carrier's row first, then
+  # resolve per name. A name carried by several feedstocks aggregates
+  # once when every row is identical (a DEPENDS-closure mirror, e.g.
+  # metanorma mirroring the inkscape toolkit it requires); the aggregate
+  # emits it once with all sources credited.
+  #
+  # DIVERGENT rows split on ownership. The feedstock named after the
+  # payload is its source of truth by construction, so an
+  # owner-vs-mirror divergence (a mirror gone stale after the owner
+  # published) resolves to the OWNER row with a loud warning — one stale
+  # mirror never blocks the whole registry. Divergence with NO owner
+  # among the carriers is a real fork: fail closed, naming the carriers
+  # (never a priority pick among peers).
+  rows_by_name = Hash.new { |h, k| h[k] = [] }
   order = []
   feedstocks.each do |repo|
     doc = YAML.safe_load(fetch("https://raw.githubusercontent.com/#{ORG}/#{repo}/HEAD/tpkg-registry.yaml"))
@@ -78,22 +87,28 @@ def build
 
     doc["payloads"].each do |row|
       name = row.fetch("name") { raise "#{repo}: a payload row carries no name" }
-      if (existing = by_name[name])
-        unless existing[0] == row
-          raise "divergent rows for payload '#{name}': carried by #{(existing[1] + [repo]).join(', ')} " \
-                "but the rows differ — one payload name, one truth; reconcile the feedstocks"
-        end
-
-        existing[1] << repo
-      else
-        by_name[name] = [row, [repo]]
-        order << name
-      end
+      order << name unless rows_by_name.key?(name)
+      rows_by_name[name] << [row, repo]
     end
     warn "read #{doc['payloads'].length} payload(s) from #{repo}"
   end
+
   render(order.map do |name|
-    row, sources = by_name[name]
+    entries = rows_by_name[name]
+    sources = entries.map(&:last)
+    row = if entries.map(&:first).uniq.length == 1
+            entries.first.first
+          else
+            owner = sources.find { |s| s == name }
+            unless owner
+              raise "divergent rows for payload '#{name}': carried by #{sources.join(', ')} " \
+                    "but the rows differ and no carrier owns the name — one payload name, one truth; reconcile the feedstocks"
+            end
+
+            warn "::warning::divergent rows for payload '#{name}' (carried by #{sources.join(', ')}) — " \
+                 "the owning feedstock's row wins; refresh the stale mirror(s)"
+            entries.find { |_, s| s == owner }.first
+          end
     warn "aggregated #{name} (#{sources.join(', ')})"
     [sources.join(", "), row]
   end)
