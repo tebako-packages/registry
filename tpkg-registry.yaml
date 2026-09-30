@@ -360,7 +360,7 @@ payloads:
     entrypoints:
     - fontist
   default: 3.0.10
-# source: tebako-packages/inkscape, metanorma
+# source: tebako-packages/inkscape
 - name: inkscape
   kind: toolkit
   versions:
