@@ -54,6 +54,12 @@ jobs:
     runs-on: ubuntu-latest
     # Every push and PR: the committed file must equal a fresh
     # regeneration — hand-edits and stale rows both go red.
+    # NOT on schedule/dispatch: there the regenerate job is the actor
+    # (it commits the drift itself), and a concurrent parity read of the
+    # pre-commit state is a guaranteed-red race whenever drift exists —
+    # the 2026-09-30 dispatch (run 36653094809) went red on exactly that
+    # while regenerate landed the drift in the same run.
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
