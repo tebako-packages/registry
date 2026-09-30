@@ -781,6 +781,10 @@ payloads:
     platforms: universal
     release:
       ref: tfs:github:tamatebako/tebako-runtime-openjdk:v2.8.21
+  - version: 21.0.12-2.8.23
+    platforms: universal
+    release:
+      ref: tfs:github:tamatebako/tebako-runtime-openjdk:v2.8.23
 # source: tebako-packages/metanorma
 - name: tebako-runtime-python
   kind: runtime
