@@ -40,10 +40,19 @@ def fetch(url)
   raise "GET #{url} → #{res.code} #{res.message}"
 end
 
+# One source per line in `feedstocks.txt`: a bare repo name sits in the
+# default org (the feedstock convention), an `org/repo` name carries its
+# own — the runtime factories live in tamatebako, and a runtime is a
+# payload like any other (spec 04 §2, spec 37 §6). Returns [org, repo]
+# pairs.
 def feedstocks
   File.readlines(FEEDSTOCKS, chomp: true)
     .map(&:strip)
     .reject { |line| line.empty? || line.start_with?("#") }
+    .map do |line|
+      org, repo = line.split("/", 2)
+      repo ? [org, repo] : [ORG, line]
+    end
 end
 
 # One "payloads: [row]" dump per row keeps Psych's block style; dropping
@@ -57,7 +66,7 @@ def render(rows)
   out << "# for every row is the named feedstock's own tpkg-registry.yaml.\n"
   out << "payloads:\n"
   rows.each do |source, row|
-    out << "# source: #{ORG}/#{source}\n"
+    out << "# source: #{source}\n"
     out << { "payloads" => [row] }.to_yaml.lines.drop(2).join
   end
   out
@@ -79,18 +88,19 @@ def build
   # (never a priority pick among peers).
   rows_by_name = Hash.new { |h, k| h[k] = [] }
   order = []
-  feedstocks.each do |repo|
-    doc = YAML.safe_load(fetch("https://raw.githubusercontent.com/#{ORG}/#{repo}/HEAD/tpkg-registry.yaml"))
+  feedstocks.each do |org, repo|
+    source = "#{org}/#{repo}"
+    doc = YAML.safe_load(fetch("https://raw.githubusercontent.com/#{source}/HEAD/tpkg-registry.yaml"))
     unless doc.is_a?(Hash) && doc["schema_version"] == 1 && doc["payloads"].is_a?(Array)
-      raise "#{repo}: tpkg-registry.yaml is not a schema_version: 1 payload registry"
+      raise "#{source}: tpkg-registry.yaml is not a schema_version: 1 payload registry"
     end
 
     doc["payloads"].each do |row|
-      name = row.fetch("name") { raise "#{repo}: a payload row carries no name" }
+      name = row.fetch("name") { raise "#{source}: a payload row carries no name" }
       order << name unless rows_by_name.key?(name)
-      rows_by_name[name] << [row, repo]
+      rows_by_name[name] << [row, source]
     end
-    warn "read #{doc['payloads'].length} payload(s) from #{repo}"
+    warn "read #{doc['payloads'].length} payload(s) from #{source}"
   end
 
   render(order.map do |name|
@@ -99,7 +109,7 @@ def build
     row = if entries.map(&:first).uniq.length == 1
             entries.first.first
           else
-            owner = sources.find { |s| s == name }
+            owner = sources.find { |s| s.split("/", 2).last == name }
             unless owner
               raise "divergent rows for payload '#{name}': carried by #{sources.join(', ')} " \
                     "but the rows differ and no carrier owns the name — one payload name, one truth; reconcile the feedstocks"

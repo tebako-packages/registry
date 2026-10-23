@@ -1,8 +1,16 @@
-# The feedstocks this aggregate flows (spec 37 §6). One repo name per
-# line; each MUST carry a schema_version: 1 tpkg-registry.yaml at its
-# default-branch root. Add a feedstock here when it joins the official
-# catalog; remove it when it leaves (its rows drop out on the next run —
-# removal flows exactly like withdrawal).
+# The feedstocks this aggregate flows (spec 37 §6). One source per line:
+# a bare repo name sits in the default org (tebako-packages), an
+# `org/repo` name carries its own. Each MUST carry a schema_version: 1
+# tpkg-registry.yaml at its default-branch root. Add a feedstock here
+# when it joins the official catalog; remove it when it leaves (its rows
+# drop out on the next run — removal flows exactly like withdrawal).
+#
+# The runtime factories are in tamatebako (a runtime is a payload like
+# any other, spec 04 §2). They are listed here because a machine that has
+# only run `tebako setup` must be able to install a runtime, and the
+# seeded registry is the one place its resolution data can live. Every
+# runtime row carries its own `release.ref`, so the row stays
+# self-addressing inside this aggregate (tebako#898).
 hello
 hello-runtimes
 fontist
@@ -10,3 +18,10 @@ inkscape
 metanorma
 tebako-crypto
 xml2rfc
+tamatebako/tebako-runtime-node
+tamatebako/tebako-runtime-bun
+tamatebako/tebako-runtime-ruby
+tamatebako/tebako-runtime-openjdk
+tamatebako/tebako-runtime-jruby
+tamatebako/tebako-runtime-truffleruby
+tamatebako/tebako-runtime-python
