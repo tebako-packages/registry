@@ -38,17 +38,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ruby tools/aggregate.rb
-      - name: Commit drift
+      # Land the drift by PR, never by push: main is branch-protected
+      # and the direct push is refused with GH006 (failing since
+      # 2026-11-18 — run 44479935194). The feedstock's registry bot PR
+      # pattern: the org PAT authors the PR (its checks run like on any
+      # human PR), auto-merge rides the parity gate. A clean tree is a
+      # no-op (create-pull-request exits clean).
+      - name: Open the drift pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.TEBAKO_CI_PAT_TOKEN }}
+          branch: aggregate/drift
+          add-paths: tpkg-registry.yaml
+          title: "aggregate: regenerate from the feedstocks"
+          commit-message: "aggregate: regenerate from the feedstocks"
+          body: |
+            Automated aggregate regeneration (the drift from the feedstocks' published rows). Auto-merges when the parity check goes green — the committed file must equal a fresh regeneration.
+
+      - name: Auto-merge the drift PR
+        env:
+          GH_TOKEN: ${{ secrets.TEBAKO_CI_PAT_TOKEN }}
         run: |
-          if git diff --quiet tpkg-registry.yaml; then
-            echo "aggregate already current"
-          else
-            git config user.name "tebako-ci"
-            git config user.email "tebako@ribose.com"
-            git add tpkg-registry.yaml
-            git commit -m "aggregate: regenerate from the feedstocks ($(date -u +%Y-%m-%d))"
-            git push
-          fi
+          # --auto rides the parity gate; the direct fallback covers
+          # repos where auto-merge is disabled (the feedstock's bot PR
+          # convention). A no-drift run never reaches here (the step
+          # above no-ops on a clean tree).
+          gh pr merge --auto --squash aggregate/drift || gh pr merge --squash aggregate/drift || true
 
   parity:
     runs-on: ubuntu-latest
