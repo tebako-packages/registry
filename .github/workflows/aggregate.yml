@@ -65,6 +65,17 @@ jobs:
           # above no-ops on a clean tree).
           gh pr merge --auto --squash aggregate/drift || gh pr merge --squash aggregate/drift || true
 
+      # Tell tebako.org the catalog's source of truth moved: its catalog
+      # workflow regenerates the data file by drift PR (daily schedule is
+      # the backstop when this poke is not wired — the dispatch needs the
+      # org PAT's repo scope, same token as the auto-merge above).
+      - name: Poke tebako.org's catalog
+        env:
+          GH_TOKEN: ${{ secrets.TEBAKO_CI_PAT_TOKEN }}
+        run: |
+          gh api repos/tamatebako/tebako.org/dispatches \
+            -f event_type=registry-updated || echo "::warning::catalog poke failed (daily schedule is the backstop)"
+
   parity:
     runs-on: ubuntu-latest
     # Every push and PR: the committed file must equal a fresh
