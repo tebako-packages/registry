@@ -16315,3 +16315,135 @@ payloads:
   engine: php
   implementation: php
   default: 8.4.28-0.1.0
+# source: tebako-packages/toolkits
+- name: jq
+  kind: toolkit
+  versions:
+  - version: 1.8.2
+    platforms:
+      aarch64-macos:
+        artifact: jq-1.8.2-macos-arm64.tfs
+        sha256: 6c519e86a8fa4334c0bc7a05f30604f0571e52ea8f95f475eb99be0e54fabddb
+        blksum:
+          filename: jq-1.8.2-macos-arm64.tfs.blksum.json
+          sha256: a2647f86f521356fa02a6f040540ddaff91e1d26a835c244851f00679ea54002
+      x86_64-macos:
+        artifact: jq-1.8.2-macos-x86_64.tfs
+        sha256: 0d2cb1fd828b9d2033c09f1209fd43985d84f34d69e2965b3e67be8a54454e0f
+        blksum:
+          filename: jq-1.8.2-macos-x86_64.tfs.blksum.json
+          sha256: 40e43d3c2d9e317a9619bc360d26c414adaa05bce066dd2a92950860b4bc8e0e
+      x86_64-linux-gnu:
+        artifact: jq-1.8.2-linux-gnu-x86_64.tfs
+        sha256: afdbc399cd72eed6dc33008b52fbde96988065c0874f7871d1f9179b1301a47a
+        blksum:
+          filename: jq-1.8.2-linux-gnu-x86_64.tfs.blksum.json
+          sha256: b6ebb6d75aa78389a2e4a3f88a1a596bca880a75c4fd7a1ced75f8c777901306
+      aarch64-linux-gnu:
+        artifact: jq-1.8.2-linux-gnu-arm64.tfs
+        sha256: c9443032c550e7701d3a61bff26a485f5fbc59b83ca63934f6a6a508c3453c11
+        blksum:
+          filename: jq-1.8.2-linux-gnu-arm64.tfs.blksum.json
+          sha256: 75bcbefeca2d6a8900c096acec0e2f1306c8b37d67ae1646692f28607f313c43
+      x86_64-windows-ucrt:
+        artifact: jq-1.8.2-windows-ucrt64.tfs
+        sha256: 4dad05a045454a78244940481a54118b4c9dfaff32f59d5d38f11d4dc760a086
+        blksum:
+          filename: jq-1.8.2-windows-ucrt64.tfs.blksum.json
+          sha256: c82f3286adf9c3d590da0c8e8ab97cfa299e6cf506052c9a88f4272fd0432351
+    release:
+      ref: tfs:github:tebako-packages/toolkits:0.1.0-1
+    signature:
+      keyid: efc3c250f7862a48
+      asc: jq-1.8.2-linux-gnu-x86_64.tfs.asc
+    entrypoints:
+    - jq
+  default: 1.8.2
+# source: tebako-packages/toolkits
+- name: ripgrep
+  kind: toolkit
+  versions:
+  - version: 16.0.0
+    platforms:
+      aarch64-macos:
+        artifact: ripgrep-16.0.0-macos-arm64.tfs
+        sha256: bec38deb19ae8c06f64f644e3d148565d4b78fb8525168eb0797939d96c88bdd
+        blksum:
+          filename: ripgrep-16.0.0-macos-arm64.tfs.blksum.json
+          sha256: d563e55e1d52bbb233fc5fd8108251db4a829559d29f998b51b39647a9f85578
+      x86_64-macos:
+        artifact: ripgrep-16.0.0-macos-x86_64.tfs
+        sha256: cfa70b0c319f3bedbb8308e476877f060632cb6361f429dca20633a43275a2e6
+        blksum:
+          filename: ripgrep-16.0.0-macos-x86_64.tfs.blksum.json
+          sha256: c1631cf0fa1e37038e2d7dffd24de5709a949f2660d2f37a8ffe213b10db7a02
+      x86_64-linux-gnu:
+        artifact: ripgrep-16.0.0-linux-gnu-x86_64.tfs
+        sha256: 2cdbd518264cc26accc69ea888890bbb4369b392ee5fac985bfa771239fe33b1
+        blksum:
+          filename: ripgrep-16.0.0-linux-gnu-x86_64.tfs.blksum.json
+          sha256: 0e7df5887aef3b2c347d70c625c2c3c291a4385260087770c3cad9a10800d3a8
+      aarch64-linux-gnu:
+        artifact: ripgrep-16.0.0-linux-gnu-arm64.tfs
+        sha256: fb7b2a760e3e2436d01d82f2df66243764b6ce0ed2bd44815aafab1af8eabd13
+        blksum:
+          filename: ripgrep-16.0.0-linux-gnu-arm64.tfs.blksum.json
+          sha256: a5a4a30b5e30b329ac9ca6c8c1c8d8d68858f9c5bb669dc140e167efcad3078c
+      x86_64-windows-ucrt:
+        artifact: ripgrep-16.0.0-windows-ucrt64.tfs
+        sha256: 7976234967420a1712aef6421a92e6e15091d66c870513ffde69949bc78f765b
+        blksum:
+          filename: ripgrep-16.0.0-windows-ucrt64.tfs.blksum.json
+          sha256: a0ca3c54e598893eb430ad1f95bb3e07bcda7fbde7ebce7f2bb3445fba67507a
+    release:
+      ref: tfs:github:tebako-packages/toolkits:0.1.0-1
+    signature:
+      keyid: efc3c250f7862a48
+      asc: ripgrep-16.0.0-linux-gnu-x86_64.tfs.asc
+    entrypoints:
+    - rg
+  default: 16.0.0
+# source: tebako-packages/toolkits
+- name: yq
+  kind: toolkit
+  versions:
+  - version: 4.54.3
+    platforms:
+      aarch64-macos:
+        artifact: yq-4.54.3-macos-arm64.tfs
+        sha256: 511f52b1931dbe6d6a288d1e7cf792212cfe44e6d7d2200b00592cfa483409d1
+        blksum:
+          filename: yq-4.54.3-macos-arm64.tfs.blksum.json
+          sha256: bc5492f10b6d758964e51675f774a980663c788aa952e1fe86cf5601dd97142e
+      x86_64-macos:
+        artifact: yq-4.54.3-macos-x86_64.tfs
+        sha256: 60ef94e8655914c85d7ab7cb2b288f4b099e640dd8269b9d3c3ce4d23086b90f
+        blksum:
+          filename: yq-4.54.3-macos-x86_64.tfs.blksum.json
+          sha256: 9de583769eaace74210c83f44a5c0a48c0358cadc1e89c437169965179bc94bf
+      x86_64-linux-gnu:
+        artifact: yq-4.54.3-linux-gnu-x86_64.tfs
+        sha256: 1efaad63fc257898f66db48fea0c50d83cd95de5e1f17f887ca7108d37a0ea8a
+        blksum:
+          filename: yq-4.54.3-linux-gnu-x86_64.tfs.blksum.json
+          sha256: e949e8dd01c4fb3fd6746b797523ca8fc31cc14f08fed8db42ca453bd02c4416
+      aarch64-linux-gnu:
+        artifact: yq-4.54.3-linux-gnu-arm64.tfs
+        sha256: c70cae16f9508610cc071bed150e5ac971948ed34d4804c3b22facc695419106
+        blksum:
+          filename: yq-4.54.3-linux-gnu-arm64.tfs.blksum.json
+          sha256: dafa3ef9ddc01afca0dddacb5d044b2aa1d282d0d3ca3b256ef8eecb6f1053a3
+      x86_64-windows-ucrt:
+        artifact: yq-4.54.3-windows-ucrt64.tfs
+        sha256: 36e1ea78e12ef0899401ae5ae7f09e3258046520d8491efc1c971d11ef09f257
+        blksum:
+          filename: yq-4.54.3-windows-ucrt64.tfs.blksum.json
+          sha256: 41d32d1ed21c5fc4c3cb9580840d810188c0890ae5da2faecd152478cc1812a1
+    release:
+      ref: tfs:github:tebako-packages/toolkits:0.1.0-1
+    signature:
+      keyid: efc3c250f7862a48
+      asc: yq-4.54.3-linux-gnu-x86_64.tfs.asc
+    entrypoints:
+    - yq
+  default: 4.54.3
