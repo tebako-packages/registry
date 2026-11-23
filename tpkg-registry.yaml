@@ -16253,3 +16253,65 @@ payloads:
   engine: python
   default: 3.14.7-0.3.5
   implementation: cpython
+# source: tebako-packages/pydata
+- name: pydata
+  kind: app
+  versions:
+  - version: 0.1.0
+    platforms:
+      aarch64-macos:
+        artifact: pydata-0.1.0-macos-arm64.tfs
+        sha256: cc2d625ca98186136fb83249f81e7b45c4df039bc31d3790253aeb9a1ba162dd
+        blksum:
+          filename: pydata-0.1.0-macos-arm64.tfs.blksum.json
+          sha256: 62cfef7d7aad0829495525046982f95ea9c72722986dc00b54a20395e9746abc
+      x86_64-linux-gnu:
+        artifact: pydata-0.1.0-linux-gnu-x86_64.tfs
+        sha256: 5269693158835621c6c5546a6e004ebb822d96ecfbe3c9ea983e8d8c8c53db59
+        blksum:
+          filename: pydata-0.1.0-linux-gnu-x86_64.tfs.blksum.json
+          sha256: cc58c6bf29d695954b6606a421d41c3a7f25d0ad4864e6327c6b9507aa4ee6a4
+      x86_64-windows-ucrt:
+        artifact: pydata-0.1.0-windows-ucrt64.tfs
+        sha256: e129095ff81ddb12d0bed0bf54e853031f41b7ba1a21cd78ad9deacbf9d7db9a
+        blksum:
+          filename: pydata-0.1.0-windows-ucrt64.tfs.blksum.json
+          sha256: b7d828abe0feee1efa608ab6f4c08e24a759777fe17f5f3a4d121d8e8a5f0a45
+    release:
+      ref: tfs:github:tebako-packages/pydata:0.1.0-1
+    signature:
+      keyid: efc3c250f7862a48
+      asc: pydata-0.1.0-macos-arm64.tfs.asc
+    runtime_requirement:
+      engine: python
+      constraint: "~> 3.14.0"
+      implementation: cpython
+    entrypoints:
+    - pydata
+  default: 0.1.0
+# source: tamatebako/tebako-runtime-php
+- name: php
+  kind: runtime
+  versions:
+  - version: 8.4.28-0.1.0
+    platforms:
+      aarch64-linux-musl:
+        artifact: tebako-runtime-0.1.0-php-8.4.28-linux-musl-arm64.tfs
+        sha256: ee0162702a9fd3bf9c37d77bae7d94f5d12db022d692e150b8ed01891b5811dd
+      aarch64-macos:
+        artifact: tebako-runtime-0.1.0-php-8.4.28-macos-arm64.tfs
+        sha256: 22f2e64ba662a4012a3b62c66b5ddd78afa0aca2d74b406daccc0a497882d847
+      x86_64-linux-gnu:
+        artifact: tebako-runtime-0.1.0-php-8.4.28-linux-gnu-x86_64.tfs
+        sha256: 8762a026ea91bf42f303c6c9fe1c240f73d8762774401c3e44918244c9040c87
+      x86_64-linux-musl:
+        artifact: tebako-runtime-0.1.0-php-8.4.28-linux-musl-x86_64.tfs
+        sha256: 81a7b9e4ecf0f9b3249a72fbbb97af862bdcb5f0067910aca3fbbe0147e93505
+      x86_64-macos:
+        artifact: tebako-runtime-0.1.0-php-8.4.28-macos-x86_64.tfs
+        sha256: 0647e7ed9a9994f963a3298d00d9ac3941ae24a45d3005af9dcae6cf8ca9e117
+    release:
+      ref: tfs:github:tamatebako/tebako-runtime-php:v0.1.0
+  engine: php
+  implementation: php
+  default: 8.4.28-0.1.0
