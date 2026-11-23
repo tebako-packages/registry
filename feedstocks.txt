@@ -25,3 +25,5 @@ tamatebako/tebako-runtime-openjdk
 tamatebako/tebako-runtime-jruby
 tamatebako/tebako-runtime-truffleruby
 tamatebako/tebako-runtime-python
+pydata
+tamatebako/tebako-runtime-php
