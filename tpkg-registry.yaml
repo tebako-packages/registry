@@ -16524,9 +16524,28 @@ payloads:
         sha256: 0647e7ed9a9994f963a3298d00d9ac3941ae24a45d3005af9dcae6cf8ca9e117
     release:
       ref: tfs:github:tamatebako/tebako-runtime-php:v0.1.0
+  - version: 8.4.28-0.1.1
+    platforms:
+      aarch64-linux-musl:
+        artifact: tebako-runtime-0.1.1-php-8.4.28-linux-musl-arm64.tfs
+        sha256: 3850dc224e8313be5b393285c2b8b0da497ac4b8ba42bc3218b573eadd7436c9
+      aarch64-macos:
+        artifact: tebako-runtime-0.1.1-php-8.4.28-macos-arm64.tfs
+        sha256: ab3f3489f37f00531401805f9b4b7a6a5808721cda141b8d04480a8c24f2d518
+      x86_64-linux-gnu:
+        artifact: tebako-runtime-0.1.1-php-8.4.28-linux-gnu-x86_64.tfs
+        sha256: ee0f8e3286f5e5ee420360927d5c7832c1a3649c492ebb7fb7a8a8d7df8caf8d
+      x86_64-linux-musl:
+        artifact: tebako-runtime-0.1.1-php-8.4.28-linux-musl-x86_64.tfs
+        sha256: af9d1c232ba821764e5b84dea6bfd15db6c44a13b3865423b07c66e0e4c37391
+      x86_64-macos:
+        artifact: tebako-runtime-0.1.1-php-8.4.28-macos-x86_64.tfs
+        sha256: c5827e941387966b40ca10fca0e5d75065c64f31773fa57d9df12083cf3584c5
+    release:
+      ref: tfs:github:tamatebako/tebako-runtime-php:v0.1.1
   engine: php
   implementation: php
-  default: 8.4.28-0.1.0
+  default: 8.4.28-0.1.1
 # source: tebako-packages/toolkits
 - name: jq
   kind: toolkit
